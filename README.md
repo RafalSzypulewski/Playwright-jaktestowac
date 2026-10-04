@@ -2,6 +2,10 @@
 
 Playwright tests run automatically on GitHub Actions for every push and pull request to `main`.
 
+## Course
+
+This repository was created while following the course **"PROGRAM PROFESJONALNA AUTOMATYZACJA TESTÓW Z PLAYWRIGHT"**: https://jaktestowac.pl/playwright/
+
 ## Test report
 
 The latest Playwright HTML report (from the most recent push to `main`) is published to GitHub Pages:
