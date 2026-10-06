@@ -5,34 +5,48 @@ test.describe('Forms page registration', () => {
 
 
     test('user can register with all valid data and sees the submitted JSON', async ({ page }) => {
-        await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+        // Arrange
+        const fullName = 'John Doe';
+        const email = 'john.doe@example.com';
+        const password = 'password123';
+        const age = '30';
+        const birthdate = '1989-03-01';
+        const country = 'Poland';
+        const expectedMessage = 'Registration successful!';
+        const expectedMaskedPassword = '********';
+        const expectedLanguage = '';
+        const expectedCountryCode = 'pl';
+        const expectedGender = 'personal';
+        const url = 'https://rafalszypulewski.github.io/TrainingWebsite/';
+        await page.goto(url);
         await page.getByTestId('page-list').getByRole('link', { name: 'Forms' }).click();
 
-        await page.locator('#fullName').fill('John Doe');
-        await page.locator('#email').fill('john.doe@example.com');
-        await page.locator('#password').fill('password123');
-        await page.locator('#confirmPassword').fill('password123');
-        await page.locator('#age').fill('30');
-        await page.getByTestId('birthdate').fill('1989-03-01');
-        await page.locator('#country').selectOption('Poland');
+        // Act
+        await page.locator('#fullName').fill(fullName);
+        await page.locator('#email').fill(email);
+        await page.locator('#password').fill(password);
+        await page.locator('#confirmPassword').fill(password);
+        await page.locator('#age').fill(age);
+        await page.getByTestId('birthdate').fill(birthdate);
+        await page.locator('#country').selectOption(country);
         await page.locator('#gender-group input[value=personal]').click();
         await page.locator('#terms').check();
         await page.locator('#signup-form button[type=submit]').click();
 
+        // Assert
         await expect(page.getByTestId('success-message')).toBeVisible();
-        await expect(page.locator('#result > .success')).toHaveText('Registration successful!');
+        await expect(page.locator('#result > .success')).toHaveText(expectedMessage);
         const json = JSON.parse(await page.locator('#result-json').innerText());
-        expect(json.fullName).toBe('John Doe');
-        expect(json.email).toBe('john.doe@example.com');
-        expect(json.password).toBe('********');
-        expect(json.password).not.toBe('password123');
-        expect(json.age).toBe('30');
-        expect(json.birthdate).toBe('1989-03-01');
-        expect(json.language).toBe('');
-        expect(json.country).toBe('pl');
-        expect(json.gender).toBe('personal');
+        expect(json.fullName).toBe(fullName);
+        expect(json.email).toBe(email);
+        expect(json.password).toBe(expectedMaskedPassword);
+        expect(json.password).not.toBe(password);
+        expect(json.age).toBe(age);
+        expect(json.birthdate).toBe(birthdate);
+        expect(json.language).toBe(expectedLanguage);
+        expect(json.country).toBe(expectedCountryCode);
+        expect(json.gender).toBe(expectedGender);
         expect(json.terms).toBe(true);
-
     });
 
 });
