@@ -13,23 +13,37 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  /* Max time for a single test (default 30 s) */
+  timeout: 30_000,
+  expect: {
+    /* Max time for web-first assertions such as toBeVisible (default 5 s) */
+    timeout: 5_000,
+  },
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry once locally (flaky tests show up as "flaky" in the report), twice on CI */
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }]]
+    : [['list'], ['html', { open: 'on-failure' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: 'https://rafalszypulewski.github.io/TrainingWebsite',
 
     /* Headed locally; headless on CI, where there is no display. */
     headless: !!process.env.CI,
+
+    /* Fail a hung click/fill after 10 s instead of waiting for the test timeout (default: no limit) */
+    actionTimeout: 10_000,
+
+    /* Fail a slow page load after 15 s (default: no limit) */
+    navigationTimeout: 15_000,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

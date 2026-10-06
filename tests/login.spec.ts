@@ -2,13 +2,12 @@ import { test, expect } from '@playwright/test';
 
 
 test.describe('User login for TrainingWebsite', () => {
-  const url = 'https://rafalszypulewski.github.io/TrainingWebsite/';
 
   test('successful login with correct credentials', async ({ page }) => {
     // Arrange
     const username = 'student';
     const password = 'Password123!';
-    await page.goto(url);
+    await page.goto('');
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
@@ -25,7 +24,7 @@ test.describe('User login for TrainingWebsite', () => {
     const incorrectUsername = 'incorrectUsername';
     const incorrectPassword = 'incorrectPassword';
     const expectedError = 'Invalid username or password';
-    await page.goto(url);
+    await page.goto('');
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
@@ -42,7 +41,7 @@ test.describe('User login for TrainingWebsite', () => {
     const username = 'student';
     const password = 'incorrectPassword';
     const expectedError = 'Invalid username or password';
-    await page.goto(url);
+    await page.goto('');
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
@@ -60,7 +59,7 @@ test.describe('User login for TrainingWebsite', () => {
     const emptyPassword = '';
     const expectedUsernameError = 'Username is required';
     const expectedPasswordError = 'Password is required';
-    await page.goto(url);
+    await page.goto('');
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
@@ -81,7 +80,7 @@ test.describe('User login for TrainingWebsite', () => {
     const validPassword = 'password';
     const expectedUsernameError = 'Username is required';
     const expectedPasswordError = 'Password is required';
-    await page.goto(url);
+    await page.goto('');
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act - blur empty username

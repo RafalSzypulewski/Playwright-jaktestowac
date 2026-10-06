@@ -1,12 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard access', () => {
-    const url = 'https://rafalszypulewski.github.io/TrainingWebsite/';
 
     test('unauthenticated user sees login notice when opening dashboard', async ({ page }) => {
         // Arrange
         const expectedNotice = 'Please log in to view that page.';
-        await page.goto(url);
+        await page.goto('');
 
         // Act
         await page.getByTestId('page-list').getByRole('link', { name: 'Dashboard' }).click();
@@ -22,7 +21,7 @@ test.describe('Dashboard access', () => {
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
-        await page.goto(url);
+        await page.goto('');
         await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
         // Act
@@ -43,7 +42,7 @@ test.describe('Dashboard access', () => {
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
-        await page.goto(url);
+        await page.goto('');
         await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
@@ -67,7 +66,7 @@ test.describe('Dashboard access', () => {
         const username = 'student';
         const password = 'Password123!';
         const expectedWelcome = 'Welcome, student!';
-        await page.goto(url);
+        await page.goto('');
         await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
@@ -89,7 +88,7 @@ test.describe('Dashboard access', () => {
         const username = 'student';
         const password = 'Password123!';
         const expectedNotice = 'You have been logged out.';
-        await page.goto(url);
+        await page.goto('');
         await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);

@@ -17,8 +17,7 @@ test.describe('Forms page registration', () => {
         const expectedLanguage = '';
         const expectedCountryCode = 'pl';
         const expectedGender = 'personal';
-        const url = 'https://rafalszypulewski.github.io/TrainingWebsite/';
-        await page.goto(url);
+        await page.goto('');
         await page.getByTestId('page-list').getByRole('link', { name: 'Forms' }).click();
 
         // Act
