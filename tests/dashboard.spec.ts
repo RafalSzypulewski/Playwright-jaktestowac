@@ -26,6 +26,10 @@ test.describe('Dashboard access', () => {
         await page.getByTestId('login-password').fill('Admin123!');
         await page.getByTestId('login-submit').click();
 
+        await expect(page.locator('#welcome')).toHaveText('Welcome, admin!');
+        await expect(page.locator('#admin-panel')).toContainText('Admin panel');
+        await expect(page.locator('#admin-panel')).toContainText('Only visible to the admin role.');
+
         await page.locator('.brand').click();
         await page.getByTestId('page-list').getByRole('link', { name: 'Dashboard' }).click();
 
