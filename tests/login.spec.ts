@@ -2,64 +2,111 @@ import { test, expect } from '@playwright/test';
 
 
 test.describe('User login for TrainingWebsite', () => {
-
+  const url = 'https://rafalszypulewski.github.io/TrainingWebsite/';
 
   test('successful login with correct credentials', async ({ page }) => {
-    await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+    // Arrange
+    const username = 'student';
+    const password = 'Password123!';
+    await page.goto(url);
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
-    await page.getByTestId('login-username').fill('student');
-    await page.getByTestId('login-password').fill('Password123!');
+
+    // Act
+    await page.getByTestId('login-username').fill(username);
+    await page.getByTestId('login-password').fill(password);
     await page.getByTestId('login-submit').click();
 
-    await expect(page.getByTestId('nav-user')).toContainText('student');
+    // Assert
+    await expect(page.getByTestId('nav-user')).toContainText(username);
   });
 
   test('unsucessful login with incorrect credentials (incorrect username)', async ({ page }) => {
-    await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+    // Arrange
+    const incorrectUsername = 'incorrectUsername';
+    const incorrectPassword = 'incorrectPassword';
+    const expectedError = 'Invalid username or password';
+    await page.goto(url);
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
-    await page.getByTestId('login-username').fill('incorrectUsername');
-    await page.getByTestId('login-password').fill('Password123!');
+
+    // Act
+    await page.getByTestId('login-username').fill(incorrectUsername);
+    await page.getByTestId('login-password').fill(incorrectPassword);
     await page.getByTestId('login-submit').click();
 
-    await expect(page.getByTestId('login-error')).toContainText('Invalid username or password');
+    // Assert
+    await expect(page.getByTestId('login-error')).toContainText(expectedError);
   });
 
   test('unsucessful login with incorrect credentials (incorrect password)', async ({ page }) => {
-    await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+    // Arrange
+    const username = 'student';
+    const password = 'incorrectPassword';
+    const expectedError = 'Invalid username or password';
+    await page.goto(url);
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
-    await page.getByTestId('login-username').fill('student');
-    await page.getByTestId('login-password').fill('incorrectPassword');
+
+    // Act
+    await page.getByTestId('login-username').fill(username);
+    await page.getByTestId('login-password').fill(password);
     await page.getByTestId('login-submit').click();
 
-    await expect(page.getByTestId('login-error')).toContainText('Invalid username or password');
+    // Assert
+    await expect(page.getByTestId('login-error')).toContainText(expectedError);
   });
 
   test('unsucessful login with incorrect credentials (empty username and password)', async ({ page }) => {
-    await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+    // Arrange
+    const emptyUsername = '';
+    const emptyPassword = '';
+    const expectedUsernameError = 'Username is required';
+    const expectedPasswordError = 'Password is required';
+    await page.goto(url);
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
-    await page.getByTestId('login-username').fill('');
-    await page.getByTestId('login-password').fill('');
+
+    // Act
+    await page.getByTestId('login-username').fill(emptyUsername);
+    await page.getByTestId('login-password').fill(emptyPassword);
     await page.getByTestId('login-submit').click();
 
-    await expect(page.locator('#username-error')).toContainText('Username is required');
-    await expect(page.locator('#password-error')).toContainText('Password is required');
+    // Assert
+    await expect(page.locator('#username-error')).toContainText(expectedUsernameError);
+    await expect(page.locator('#password-error')).toContainText(expectedPasswordError);
   });
 
   test('unsucessful login with incorrect credentials with blur(empty username and password)', async ({ page }) => {
-    await page.goto('https://rafalszypulewski.github.io/TrainingWebsite/');
+    // Arrange
+    const emptyUsername = '';
+    const emptyPassword = '';
+    const validUsername = 'qwerty';
+    const validPassword = 'password';
+    const expectedUsernameError = 'Username is required';
+    const expectedPasswordError = 'Password is required';
+    await page.goto(url);
     await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
-    await page.getByTestId('login-username').fill('');
-    await page.getByTestId('login-username').blur();
-    await expect(page.locator('#username-error')).toContainText('Username is required');
-    await page.getByTestId('login-password').fill('');
-    await page.getByTestId('login-password').blur();
-    await expect(page.locator('#password-error')).toContainText('Password is required');
 
-
-    await page.getByTestId('login-username').fill('qwerty');
+    // Act - blur empty username
+    await page.getByTestId('login-username').fill(emptyUsername);
     await page.getByTestId('login-username').blur();
-    await page.getByTestId('login-password').fill('password');
+
+    // Assert
+    await expect(page.locator('#username-error')).toBeVisible();
+    await expect(page.locator('#username-error')).toContainText(expectedUsernameError);
+
+    // Act - blur empty password
+    await page.getByTestId('login-password').fill(emptyPassword);
     await page.getByTestId('login-password').blur();
+
+    // Assert
+    await expect(page.locator('#password-error')).toBeVisible();
+    await expect(page.locator('#password-error')).toContainText(expectedPasswordError);
+
+    // Act - fill both fields with valid values and blur them
+    await page.getByTestId('login-username').fill(validUsername);
+    await page.getByTestId('login-username').blur();
+    await page.getByTestId('login-password').fill(validPassword);
+    await page.getByTestId('login-password').blur();
+
+    // Assert
     await expect(page.locator('#username-error')).toBeHidden();
     await expect(page.locator('#password-error')).toBeHidden();
   });
