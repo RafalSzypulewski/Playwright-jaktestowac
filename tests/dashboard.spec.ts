@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginData } from '../test-data/login.data';
+import { LoginPage } from '../pages/login.page';
 
 test.beforeEach(async ({ page }) => {
     await page.goto('');
@@ -23,7 +24,8 @@ test.describe('Dashboard denied access', () => {
 
 test.describe('Dashboard access', () => {
     test.beforeEach(async ({ page }) => {
-        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
+        const loginPage = new LoginPage(page);
+        await loginPage.open();
     });
 
 
@@ -36,9 +38,8 @@ test.describe('Dashboard access', () => {
         const expectedPanelText = 'Only visible to the admin role.';
 
         // Act
-        await page.getByTestId('login-username').fill(username);
-        await page.getByTestId('login-password').fill(password);
-        await page.getByTestId('login-submit').click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login(username, password);
 
         // Assert
         await expect(page.locator('#welcome')).toHaveText(expectedWelcome);
@@ -53,9 +54,8 @@ test.describe('Dashboard access', () => {
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
-        await page.getByTestId('login-username').fill(username);
-        await page.getByTestId('login-password').fill(password);
-        await page.getByTestId('login-submit').click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login(username, password);
         await expect(page.locator('#welcome')).toHaveText(expectedWelcome);
         await expect(page.locator('#admin-panel')).toContainText(expectedPanelTitle);
         await expect(page.locator('#admin-panel')).toContainText(expectedPanelText);
@@ -75,9 +75,8 @@ test.describe('Dashboard access', () => {
         const username = loginData.validStudentCredentials.username;
         const password = loginData.validStudentCredentials.password;
         const expectedWelcome = 'Welcome, student!';
-        await page.getByTestId('login-username').fill(username);
-        await page.getByTestId('login-password').fill(password);
-        await page.getByTestId('login-submit').click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login(username, password);
         await expect(page.locator('#welcome')).toHaveText(expectedWelcome);
         await expect(page.locator('#admin-panel')).toBeHidden();
 
@@ -95,9 +94,8 @@ test.describe('Dashboard access', () => {
         const username = loginData.validStudentCredentials.username;
         const password = loginData.validStudentCredentials.password;
         const expectedNotice = 'You have been logged out.';
-        await page.getByTestId('login-username').fill(username);
-        await page.getByTestId('login-password').fill(password);
-        await page.getByTestId('login-submit').click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login(username, password);
 
         // Act
         await page.locator('#logout').click();

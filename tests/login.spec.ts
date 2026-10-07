@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { loginData } from '../test-data/login.data';
+import { LoginPage } from '../pages/login.page';
 
 test.describe('User login for TrainingWebsite', () => {
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
+    const loginPage = new LoginPage(page);
+    await loginPage.open();
   });
 
 
@@ -16,11 +17,11 @@ test.describe('User login for TrainingWebsite', () => {
     const password = loginData.validStudentCredentials.password;
 
     // Act
-    await page.getByTestId('login-username').fill(username);
-    await page.getByTestId('login-password').fill(password);
-    await page.getByTestId('login-submit').click();
+    const loginPage = new LoginPage(page);
+    await loginPage.login(username, password);
 
     // Assert
+    await expect(page.getByTestId('nav-user')).toBeVisible();
     await expect(page.getByTestId('nav-user')).toContainText(username);
   });
 
@@ -31,11 +32,11 @@ test.describe('User login for TrainingWebsite', () => {
     const expectedError = 'Invalid username or password';
 
     // Act
-    await page.getByTestId('login-username').fill(incorrectUsername);
-    await page.getByTestId('login-password').fill(incorrectPassword);
-    await page.getByTestId('login-submit').click();
+    const loginPage = new LoginPage(page);
+    await loginPage.login(incorrectUsername, incorrectPassword);
 
     // Assert
+    await expect(page.getByTestId('login-error')).toBeVisible();
     await expect(page.getByTestId('login-error')).toContainText(expectedError);
   });
 
@@ -46,9 +47,8 @@ test.describe('User login for TrainingWebsite', () => {
     const expectedError = 'Invalid username or password';
 
     // Act
-    await page.getByTestId('login-username').fill(username);
-    await page.getByTestId('login-password').fill(incorrectPassword);
-    await page.getByTestId('login-submit').click();
+    const loginPage = new LoginPage(page);
+    await loginPage.login(username, incorrectPassword);
 
     // Assert
     await expect(page.getByTestId('login-error')).toContainText(expectedError);
@@ -62,9 +62,8 @@ test.describe('User login for TrainingWebsite', () => {
     const expectedPasswordError = 'Password is required';
 
     // Act
-    await page.getByTestId('login-username').fill(emptyUsername);
-    await page.getByTestId('login-password').fill(emptyPassword);
-    await page.getByTestId('login-submit').click();
+    const loginPage = new LoginPage(page);
+    await loginPage.login(emptyUsername, emptyPassword);
 
     // Assert
     await expect(page.locator('#username-error')).toContainText(expectedUsernameError);
@@ -81,26 +80,23 @@ test.describe('User login for TrainingWebsite', () => {
     const expectedPasswordError = 'Password is required';
 
     // Act - blur empty username
-    await page.getByTestId('login-username').fill(emptyUsername);
-    await page.getByTestId('login-username').blur();
+    const loginPage = new LoginPage(page);
+    await loginPage.fillUsernameAndBlur(emptyUsername);
 
     // Assert
     await expect(page.locator('#username-error')).toBeVisible();
     await expect(page.locator('#username-error')).toContainText(expectedUsernameError);
 
     // Act - blur empty password
-    await page.getByTestId('login-password').fill(emptyPassword);
-    await page.getByTestId('login-password').blur();
+    await loginPage.fillPasswordAndBlur(emptyPassword);
 
     // Assert
     await expect(page.locator('#password-error')).toBeVisible();
     await expect(page.locator('#password-error')).toContainText(expectedPasswordError);
 
     // Act - fill both fields with valid values and blur them
-    await page.getByTestId('login-username').fill(validUsername);
-    await page.getByTestId('login-username').blur();
-    await page.getByTestId('login-password').fill(validPassword);
-    await page.getByTestId('login-password').blur();
+    await loginPage.fillUsernameAndBlur(validUsername);
+    await loginPage.fillPasswordAndBlur(validPassword);
 
     // Assert
     await expect(page.locator('#username-error')).toBeHidden();
