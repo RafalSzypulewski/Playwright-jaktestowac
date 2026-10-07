@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-
+import { loginData } from '../test-data/login.data';
 
 test.describe('User login for TrainingWebsite', () => {
 
@@ -12,8 +12,8 @@ test.describe('User login for TrainingWebsite', () => {
 
   test('successful login with correct credentials', async ({ page }) => {
     // Arrange
-    const username = 'student';
-    const password = 'Password123!';
+    const username = loginData.validStudentCredentials.username;
+    const password = loginData.validStudentCredentials.password;
 
     // Act
     await page.getByTestId('login-username').fill(username);
@@ -26,8 +26,8 @@ test.describe('User login for TrainingWebsite', () => {
 
   test('unsucessful login with incorrect credentials (incorrect username)', async ({ page }) => {
     // Arrange
-    const incorrectUsername = 'incorrectUsername';
-    const incorrectPassword = 'incorrectPassword';
+    const incorrectUsername = loginData.invalidCredentials.incorrectUsername;
+    const incorrectPassword = loginData.invalidCredentials.incorrectPassword;
     const expectedError = 'Invalid username or password';
 
     // Act
@@ -41,8 +41,8 @@ test.describe('User login for TrainingWebsite', () => {
 
   test('unsucessful login with incorrect credentials (incorrect password)', async ({ page }) => {
     // Arrange
-    const username = 'student';
-    const incorrectPassword = 'incorrectPassword';
+    const username = loginData.validStudentCredentials.username;
+    const incorrectPassword = loginData.invalidCredentials.incorrectPassword;
     const expectedError = 'Invalid username or password';
 
     // Act
@@ -75,8 +75,8 @@ test.describe('User login for TrainingWebsite', () => {
     // Arrange
     const emptyUsername = '';
     const emptyPassword = '';
-    const validUsername = 'qwerty';
-    const validPassword = 'password';
+    const validUsername = loginData.validStudentCredentials.username;
+    const validPassword = loginData.validStudentCredentials.password;
     const expectedUsernameError = 'Username is required';
     const expectedPasswordError = 'Password is required';
 

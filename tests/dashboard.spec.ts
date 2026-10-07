@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { loginData } from '../test-data/login.data';
 
 test.beforeEach(async ({ page }) => {
     await page.goto('');
@@ -28,8 +29,8 @@ test.describe('Dashboard access', () => {
 
     test('admin sees admin panel after login', async ({ page }) => {
         // Arrange
-        const username = 'admin';
-        const password = 'Admin123!';
+        const username = loginData.validAdminCredentials.username;
+        const password = loginData.validAdminCredentials.password;
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
@@ -47,8 +48,8 @@ test.describe('Dashboard access', () => {
 
     test('admin still sees admin panel when revisiting dashboard', async ({ page }) => {
         // Arrange - log in as admin and confirm the dashboard is shown
-        const username = 'admin';
-        const password = 'Admin123!';
+        const username = loginData.validAdminCredentials.username;
+        const password = loginData.validAdminCredentials.password;
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
@@ -71,8 +72,8 @@ test.describe('Dashboard access', () => {
 
     test('student does not see admin panel', async ({ page }) => {
         // Arrange - log in as student and confirm the dashboard is shown
-        const username = 'student';
-        const password = 'Password123!';
+        const username = loginData.validStudentCredentials.username;
+        const password = loginData.validStudentCredentials.password;
         const expectedWelcome = 'Welcome, student!';
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
@@ -91,8 +92,8 @@ test.describe('Dashboard access', () => {
 
     test('student can log out and sees logout notice', async ({ page }) => {
         // Arrange
-        const username = 'student';
-        const password = 'Password123!';
+        const username = loginData.validStudentCredentials.username;
+        const password = loginData.validStudentCredentials.password;
         const expectedNotice = 'You have been logged out.';
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
