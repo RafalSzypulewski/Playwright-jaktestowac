@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ page }) => {
+    await page.goto('');
+    await page.getByTestId('page-list').getByRole('link', { name: 'Forms' }).click();
+});
 
 test.describe('Forms page registration', () => {
-
 
     test('user can register with all valid data and sees the submitted JSON', async ({ page }) => {
         // Arrange
@@ -17,8 +20,6 @@ test.describe('Forms page registration', () => {
         const expectedLanguage = '';
         const expectedCountryCode = 'pl';
         const expectedGender = 'personal';
-        await page.goto('');
-        await page.getByTestId('page-list').getByRole('link', { name: 'Forms' }).click();
 
         // Act
         await page.locator('#fullName').fill(fullName);

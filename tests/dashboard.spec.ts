@@ -1,11 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Dashboard access', () => {
+test.beforeEach(async ({ page }) => {
+    await page.goto('');
+});
 
+
+
+test.describe('Dashboard denied access', () => {
     test('unauthenticated user sees login notice when opening dashboard', async ({ page }) => {
         // Arrange
         const expectedNotice = 'Please log in to view that page.';
-        await page.goto('');
 
         // Act
         await page.getByTestId('page-list').getByRole('link', { name: 'Dashboard' }).click();
@@ -14,6 +18,14 @@ test.describe('Dashboard access', () => {
         await expect(page.locator('#login-notice')).toHaveText(expectedNotice);
     });
 
+});
+
+test.describe('Dashboard access', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
+    });
+
+
     test('admin sees admin panel after login', async ({ page }) => {
         // Arrange
         const username = 'admin';
@@ -21,8 +33,6 @@ test.describe('Dashboard access', () => {
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
-        await page.goto('');
-        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
         // Act
         await page.getByTestId('login-username').fill(username);
@@ -42,8 +52,6 @@ test.describe('Dashboard access', () => {
         const expectedWelcome = 'Welcome, admin!';
         const expectedPanelTitle = 'Admin panel';
         const expectedPanelText = 'Only visible to the admin role.';
-        await page.goto('');
-        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
         await page.getByTestId('login-submit').click();
@@ -66,8 +74,6 @@ test.describe('Dashboard access', () => {
         const username = 'student';
         const password = 'Password123!';
         const expectedWelcome = 'Welcome, student!';
-        await page.goto('');
-        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
         await page.getByTestId('login-submit').click();
@@ -88,8 +94,6 @@ test.describe('Dashboard access', () => {
         const username = 'student';
         const password = 'Password123!';
         const expectedNotice = 'You have been logged out.';
-        await page.goto('');
-        await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
         await page.getByTestId('login-username').fill(username);
         await page.getByTestId('login-password').fill(password);
         await page.getByTestId('login-submit').click();

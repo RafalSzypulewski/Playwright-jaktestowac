@@ -3,12 +3,17 @@ import { test, expect } from '@playwright/test';
 
 test.describe('User login for TrainingWebsite', () => {
 
+  test.beforeEach(async ({ page }) => {
+    await page.goto('');
+    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
+  });
+
+
+
   test('successful login with correct credentials', async ({ page }) => {
     // Arrange
     const username = 'student';
     const password = 'Password123!';
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
     await page.getByTestId('login-username').fill(username);
@@ -24,8 +29,6 @@ test.describe('User login for TrainingWebsite', () => {
     const incorrectUsername = 'incorrectUsername';
     const incorrectPassword = 'incorrectPassword';
     const expectedError = 'Invalid username or password';
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
     await page.getByTestId('login-username').fill(incorrectUsername);
@@ -39,14 +42,12 @@ test.describe('User login for TrainingWebsite', () => {
   test('unsucessful login with incorrect credentials (incorrect password)', async ({ page }) => {
     // Arrange
     const username = 'student';
-    const password = 'incorrectPassword';
+    const incorrectPassword = 'incorrectPassword';
     const expectedError = 'Invalid username or password';
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
     await page.getByTestId('login-username').fill(username);
-    await page.getByTestId('login-password').fill(password);
+    await page.getByTestId('login-password').fill(incorrectPassword);
     await page.getByTestId('login-submit').click();
 
     // Assert
@@ -59,8 +60,6 @@ test.describe('User login for TrainingWebsite', () => {
     const emptyPassword = '';
     const expectedUsernameError = 'Username is required';
     const expectedPasswordError = 'Password is required';
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act
     await page.getByTestId('login-username').fill(emptyUsername);
@@ -80,8 +79,6 @@ test.describe('User login for TrainingWebsite', () => {
     const validPassword = 'password';
     const expectedUsernameError = 'Username is required';
     const expectedPasswordError = 'Password is required';
-    await page.goto('');
-    await page.getByTestId('page-list').getByRole('link', { name: 'Login' }).click();
 
     // Act - blur empty username
     await page.getByTestId('login-username').fill(emptyUsername);
